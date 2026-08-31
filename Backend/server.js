@@ -14,6 +14,8 @@ const dashboardRoutes = require("./Routes/dashboardRoutes.js");
 
 const app = express();
 
+app.set("trust proxy", 1);
+
 // Middlewares
 app.use(cookieParser());
 
