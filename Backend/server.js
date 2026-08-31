@@ -17,12 +17,10 @@ const app = express();
 // Middlewares
 app.use(cookieParser());
 
-app.use(
-  cors({
-    origin: process.env.CLIENT_URL,
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: "https://YOUR-NETLIFY-SITE.netlify.app",
+  credentials: true
+}));
 
 app.use(express.json());
 
