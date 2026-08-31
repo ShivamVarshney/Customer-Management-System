@@ -31,10 +31,14 @@ export default function Login() {
   try {
     const { data } = await api.post("/auth/login", form);
 
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("user", JSON.stringify(data.user));
+console.log("Login Response:", data);
 
-    navigate("/");
+localStorage.setItem("token", data.token);
+localStorage.setItem("user", JSON.stringify(data.user));
+
+console.log("Saved Token:", localStorage.getItem("token"));
+
+navigate("/");
   } catch (err) {
     setError(err.response?.data?.message || "Login failed");
   }
