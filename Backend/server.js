@@ -18,8 +18,8 @@ const app = express();
 app.use(cookieParser());
 
 app.use(cors({
-  origin: "https://YOUR-NETLIFY-SITE.netlify.app",
-  credentials: true
+  origin: "https://6a95b10a5ce4eb5f5d2dca21--dreamy-palmier-8c1615.netlify.app",
+  credentials: true,
 }));
 
 app.use(express.json());
