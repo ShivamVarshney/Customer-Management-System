@@ -20,7 +20,10 @@ app.set("trust proxy", 1);
 app.use(cookieParser());
 
 app.use(cors({
-  origin: "https://6a95b10a5ce4eb5f5d2dca21--dreamy-palmier-8c1615.netlify.app",
+  origin: [
+    "https://dreamy-palmier-8c1615.netlify.app",
+    "https://6a95b10a5ce4eb5f5d2dca21--dreamy-palmier-8c1615.netlify.app"
+  ],
   credentials: true,
 }));
 
