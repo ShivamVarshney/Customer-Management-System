@@ -52,12 +52,12 @@ const register = async (req, res) => {
     const token = generateToken(user);
 
     // Cookie Set
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: false,      // Render/HTTPS par true karna
-      sameSite: "lax",
-      maxAge: 24 * 60 * 60 * 1000,
-    });
+   res.cookie("token", token, {
+  httpOnly: true,
+  secure: true,
+  sameSite: "none",
+  maxAge: 24 * 60 * 60 * 1000,
+});
 
     res.status(201).json({
       success: true,
@@ -118,11 +118,11 @@ const login = async (req, res) => {
 
     // Cookie Set
     res.cookie("token", token, {
-      httpOnly: true,
-      secure: false,      // HTTPS par true
-      sameSite: "lax",
-      maxAge: 24 * 60 * 60 * 1000,
-    });
+  httpOnly: true,
+  secure: true,
+  sameSite: "none",
+  maxAge: 24 * 60 * 60 * 1000,
+});
 
     res.status(200).json({
       success: true,
@@ -149,8 +149,11 @@ const login = async (req, res) => {
 // ================= LOGOUT =================
 
 const logout = (req, res) => {
-  res.clearCookie("token");
-
+ res.clearCookie("token", {
+  httpOnly: true,
+  secure: true,
+  sameSite: "none",
+});
   res.json({
     success: true,
     message: "Logged out successfully",
