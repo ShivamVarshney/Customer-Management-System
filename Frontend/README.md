@@ -1,12 +1,18 @@
-# React + Vite
+﻿# Customer Management System Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This directory contains the React 19 and Vite frontend for the MERN Customer Management System. It uses React Router for login, registration, dashboard, customer list, and customer detail pages, with Tailwind CSS v4 for styling.
 
-Currently, two official plugins are available:
+For complete project setup, environment variables, API routes, deployment notes, and known limitations, see the [root project README](../README.md).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Frontend commands
 
-## Expanding the ESLint configuration
+Run these commands from this directory:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```sh
+npm install
+npm run dev
+npm run lint
+npm run build
+```
+
+Set `VITE_API_URL` in `Frontend/.env` when the backend API is not available at the local default documented in the root README. Do not put secrets in `VITE_*` variables; they are included in browser code.

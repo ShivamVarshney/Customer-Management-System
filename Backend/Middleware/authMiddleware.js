@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
 
 const protect = (req, res, next) => {
   try {
@@ -16,6 +17,12 @@ const protect = (req, res, next) => {
       token,
       process.env.JWT_SECRET
     );
+
+    if (!decoded.id || !mongoose.isValidObjectId(decoded.id)) {
+      return res.status(401).json({
+        message: "Invalid or expired token"
+      });
+    }
 
     req.user = decoded;
 

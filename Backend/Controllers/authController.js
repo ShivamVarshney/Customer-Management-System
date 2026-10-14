@@ -14,21 +14,31 @@ const generateToken = (user) => {
   );
 };
 
+const isValidEmail = (email) =>
+  typeof email === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+
 // ================= REGISTER =================
 
 const register = async (req, res) => {
   try {
-    const { firstName, lastName, email, phone, password } = req.body;
+    const { firstName, lastName, email, phone, password } = req.body || {};
 
-    if (!firstName || !lastName || !email || !phone || !password) {
+    if (
+      typeof firstName !== "string" || !firstName.trim() ||
+      typeof lastName !== "string" || !lastName.trim() ||
+      !isValidEmail(email) || typeof phone !== "string" || !phone.trim() ||
+      typeof password !== "string" || password.length < 8
+    ) {
       return res.status(400).json({
         success: false,
-        message: "All fields are required",
+        message: "Provide valid registration details and a password of at least 8 characters",
       });
     }
 
+    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedPhone = phone.trim();
     const existingUser = await User.findOne({
-      $or: [{ email: email.toLowerCase() }, { phone }],
+      $or: [{ email: normalizedEmail }, { phone: normalizedPhone }],
     });
 
     if (existingUser) {
@@ -41,24 +51,15 @@ const register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({
-      firstName,
-      lastName,
-      email: email.toLowerCase(),
-      phone,
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      email: normalizedEmail,
+      phone: normalizedPhone,
       password: hashedPassword,
-      role: "admin",
+      role: "user",
     });
 
     const token = generateToken(user);
-
-    // Cookie Set
-   res.cookie("token", token, {
-  httpOnly: true,
-  secure: true,
-  sameSite: "none",
-  path: "/",
-  maxAge: 24 * 60 * 60 * 1000,
-});
 
     res.status(201).json({
       success: true,
@@ -73,8 +74,12 @@ const register = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log(error);
-
+    if (error?.code === 11000) {
+      return res.status(409).json({
+        success: false,
+        message: "Email or phone already exists",
+      });
+    }
     res.status(500).json({
       success: false,
       message: "Registration failed",
@@ -86,18 +91,16 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password } = req.body || {};
 
-    if (!email || !password) {
+    if (!isValidEmail(email) || typeof password !== "string" || !password) {
       return res.status(400).json({
         success: false,
         message: "Email and password are required",
       });
     }
 
-    const user = await User.findOne({
-      email: email.toLowerCase(),
-    });
+    const user = await User.findOne({ email: email.trim().toLowerCase() });
 
     if (!user) {
       return res.status(401).json({
@@ -117,15 +120,6 @@ const login = async (req, res) => {
 
     const token = generateToken(user);
 
-    // Cookie Set
-   res.cookie("token", token, {
-  httpOnly: true,
-  secure: true,
-  sameSite: "none",
-  path: "/",
-  maxAge: 24 * 60 * 60 * 1000,
-});
-
     res.status(200).json({
       success: true,
       message: "Login successful",
@@ -139,8 +133,6 @@ const login = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log(error);
-
     res.status(500).json({
       success: false,
       message: "Login failed",
@@ -151,11 +143,6 @@ const login = async (req, res) => {
 // ================= LOGOUT =================
 
 const logout = (req, res) => {
- res.clearCookie("token", {
-  httpOnly: true,
-  secure: true,
-  sameSite: "none",
-});
   res.json({
     success: true,
     message: "Logged out successfully",
